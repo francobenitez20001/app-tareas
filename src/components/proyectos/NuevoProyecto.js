@@ -6,7 +6,7 @@ const NuevoProyecto = () => {
         nombre:''
     });
 
-    const {nuevoProyecto,mostrarFormulario} = useContext(ProyectoContext);
+    const {errorFormulario,nuevoProyecto,mostrarFormulario,agregarProyecto,mostrarError} = useContext(ProyectoContext);
 
     const handleChange = e=>{
         setProyecto({
@@ -17,6 +17,9 @@ const NuevoProyecto = () => {
 
     const handleSubmit = e=>{
         e.preventDefault();
+        if(proyecto.nombre === '') return mostrarError();
+        agregarProyecto(proyecto);
+        setProyecto({nombre:''})
     }
     return (
         <>
@@ -27,6 +30,8 @@ const NuevoProyecto = () => {
                 <input type="submit" value="Agregar Proyecto" className="btn btn-primario btn-block"/>
             </form>
             :null}
+
+            {errorFormulario ? <p className="mensaje error">El nombre del proyecto es obligatorio</p> : null}
         </>
     );
 }
