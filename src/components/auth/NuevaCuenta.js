@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import {AlertaContext} from '../../context/alertas/alertaContext';
+import {AuthContext} from '../../context/autenticacion/authContext';
 
-const NuevaCuenta = () => {
+const NuevaCuenta = (props) => {
 
     const [usuario, setUsuario] = useState({
         nombre:'',
@@ -9,6 +11,19 @@ const NuevaCuenta = () => {
         password:'',
         cpassword:''
     })
+
+    const {alerta,mostrarAlerta} = useContext(AlertaContext);
+    const {register,mensaje,autenticado} = useContext(AuthContext);
+
+    useEffect(() => {
+        if(autenticado){
+            props.history.push('/proyectos');
+        }
+
+        if(mensaje){
+            mostrarAlerta(mensaje.msg,mensaje.categoria);
+        }
+    }, [mensaje,autenticado,props.history])
 
     const handleChange = event=>{
         setUsuario({
@@ -21,19 +36,30 @@ const NuevaCuenta = () => {
         e.preventDefault();
 
         //validación
-
+        if(usuario.nombre.trim() === '' || usuario.email.trim() === '' || usuario.password.trim() === '' || usuario.cpassword.trim() === ''){
+            mostrarAlerta('Todos los campos son obligatorios','alerta-error');
+            return;
+        }
 
         //password minimo de 6 caracteres
-
+        if(usuario.password.length <=6 || usuario.cpassword.length <= 6){
+            mostrarAlerta('El password debe ser mayor a 6 caracteres', 'alerta-error');
+            return;
+        }
 
         //los 2 password sean iguales
+        if(usuario.password !== usuario.cpassword){
+            mostrarAlerta('Las contraseñas no coinciden','alerta-error');
+            return;
+        }
 
         
         //pasarlo al action
+        register(usuario);
     }
-
     return (
         <div className="form-usuario">
+            {alerta ? <div className={`alerta ${alerta.categoria}`}>{alerta.msg}</div> : null}
             <div className="contenedor-form sombra-dark">
                 <h1>Obtener una cuenta</h1>
 
