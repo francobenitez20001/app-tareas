@@ -1,12 +1,13 @@
 import React, { useContext, useState } from 'react';
 import {ProyectoContext} from '../../context/proyectos/proyectoContext';
+import Loader from '../Loader';
 
 const NuevoProyecto = () => {
     const [proyecto, setProyecto] = useState({
         nombre:''
     });
 
-    const {errorFormulario,nuevoProyecto,mostrarFormulario,agregarProyecto,mostrarError} = useContext(ProyectoContext);
+    const {errorFormulario,nuevoProyecto,loading,mostrarFormulario,agregarProyecto,mostrarError} = useContext(ProyectoContext);
 
     const handleChange = e=>{
         setProyecto({
@@ -27,7 +28,7 @@ const NuevoProyecto = () => {
             {nuevoProyecto ? 
             <form className="formulario-nuevo-proyecto" onSubmit={handleSubmit}>
                 <input type="text" className="input-text" name="nombre" placeholder="Nombre proyecto" onChange={handleChange} value={proyecto.nombre}/>
-                <input type="submit" value="Agregar Proyecto" className="btn btn-primario btn-block"/>
+                {loading ? <Loader/> : <input type="submit" value="Agregar Proyecto" className="btn btn-primario btn-block"/>}
             </form>
             :null}
 

@@ -15,13 +15,13 @@ export default(state,action)=>{
         case MODIFICAR_TAREA:
             return {
                 ...state,
-                tareas:state.tareas.map(tarea=>tarea.id === action.payload.id ? action.payload : tarea),
+                tareas:state.tareas.map(tarea=>tarea._id === action.payload.id ? action.payload : tarea),
                 tarea:null
             }
         case CAMBIAR_ESTADO_TAREA:
             return {
                 ...state,
-                tareas:state.tareas.map(tarea=>tarea.id === action.payload ? {...tarea,estado:!tarea.estado} : tarea)
+                tareas:state.tareas.map(tarea=>tarea._id === action.payload ? {...tarea,estado:!tarea.estado} : tarea)
             }
         case SELECCIONAR_TAREA:
             return {...state,tarea:action.payload}

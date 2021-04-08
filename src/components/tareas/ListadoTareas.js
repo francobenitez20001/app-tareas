@@ -4,7 +4,7 @@ import { ProyectoContext } from "../../context/proyectos/proyectoContext";
 import { TareaContext } from "../../context/tareas/tareaContext";
 
 const ListadoTareas = () => {
-    const {proyecto} = useContext(ProyectoContext);
+    const {proyecto,desactivarProyecto} = useContext(ProyectoContext);
     const {tareaPorProyecto,obtenerTareas,obtenerTareasPorProyecto} = useContext(TareaContext);
 
     useEffect(() => {
@@ -16,7 +16,8 @@ const ListadoTareas = () => {
             obtenerTareasPorProyecto(proyecto.id);
         }
     }, [proyecto])
-
+    
+    //console.log(proyecto);
 
     if(!proyecto) return <p className="mensaje error">Ningun proyecto seleccionado</p>;
     return ( 
@@ -27,7 +28,7 @@ const ListadoTareas = () => {
                 tareaPorProyecto.map((tarea,key)=>(
                     <Tarea key={key} tarea={tarea}/>
                 ))}
-                <button type="button" className="btn btn-eliminar">Eliminar Proyecto &times;</button>
+                <button type="button" onClick={desactivarProyecto} className="btn btn-eliminar">Eliminar Proyecto &times;</button>
             </ul>
         </>
     );

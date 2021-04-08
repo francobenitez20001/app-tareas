@@ -1,17 +1,24 @@
 import React, { useContext } from 'react';
 import {ProyectoContext} from '../../context/proyectos/proyectoContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
-const Proyecto = ({proyecto}) => {
+const Proyecto = (props) => {
 
-    const {seleccionarProyecto} = useContext(ProyectoContext)
+    const {seleccionarProyecto,proyecto,eliminarProyecto} = useContext(ProyectoContext)
 
-    const handleClick = proyecto=>{
-        seleccionarProyecto(proyecto.id);
+    const handleClick = data=>{
+        seleccionarProyecto(data._id);
+    }
+
+    const handleDelete = id=>{
+        eliminarProyecto(id);
     }
     
     return (
-        <li>
-            <button onClick={()=>handleClick(proyecto)} type="button" className="btn btn-blank">{proyecto.nombre}</button>
+        <li className={proyecto && proyecto._id === props.proyecto._id ? 'active' : ''} onClick={()=>handleClick(props.proyecto)}>
+            <span>{props.proyecto.nombre}</span>
+            <FontAwesomeIcon icon={faTrash} onClick={()=>handleDelete(props.proyecto._id)}/>
         </li>
     );
 }
