@@ -7,9 +7,9 @@ const proyectoReducer = (state,action)=>{
         case FORMULARIO_PROYECTO:
             return {...state,nuevoProyecto:true}
         case OBTENER_PROYECTOS:
-            return {...state,proyectos:action.payload,loading:false}
+            return {...state,proyectos:action.payload,loading:false,error:null}
         case AGREGAR_PROYECTO:
-            return {...state,proyectos:[...state.proyectos,action.payload],nuevoProyecto:false,errorFormulario:false,loading:false}
+            return {...state,proyectos:[...state.proyectos,action.payload],nuevoProyecto:false,errorFormulario:false,loading:false,error:null}
         case VALIDAR_FORMULARIO:
             return {...state,errorFormulario:true}
         case PROYECTO_ACTUAL:

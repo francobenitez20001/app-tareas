@@ -89,7 +89,8 @@ const ProyectoState = props =>{
         });
         try {
             await clienteAxios.delete(`/api/proyectos/${id}`);
-            obtenerProyectos();
+            desactivarProyecto();
+            return obtenerProyectos();
         } catch (error) {
             console.log('error: ',error);
             dispatch({
