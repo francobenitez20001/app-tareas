@@ -17,11 +17,11 @@ const Tarea = ({tarea}) => {
     return ( 
         <li className="tarea sombra">
             <p>{tarea.nombre}</p>
-            <div className="estado">{tarea.estado ? <button onClick={()=>handleEstado(tarea.id)} type="button" className="completo">Compĺeto</button> : <button type="button" onClick={()=>handleEstado(tarea.id)} className="incompleto">Incompĺeto</button>}</div>
+            <div className="estado">{tarea.estado ? <button onClick={()=>handleEstado(tarea._id)} type="button" className="completo">Compĺeto</button> : <button type="button" onClick={()=>handleEstado(tarea._id)} className="incompleto">Incompĺeto</button>}</div>
 
             <div className="acciones">
                 <button type="button" onClick={()=>seleccionarTarea(tarea)} className="btn btn-primario">Editar</button>
-                <button type="button" onClick={()=>handleDelete(tarea.id)} className="btn btn-secundario">Eliminar</button>
+                <button type="button" onClick={()=>handleDelete(tarea._id)} className="btn btn-secundario">Eliminar</button>
             </div>
         </li>
     );

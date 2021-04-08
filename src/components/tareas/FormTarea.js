@@ -3,22 +3,22 @@ import { TareaContext } from "../../context/tareas/tareaContext";
 import {ProyectoContext} from '../../context/proyectos/proyectoContext';
 
 const FormTareas = () => {
+    
+    const {tarea,errorFormulario,agregarTarea,mostrarError,modificarTarea,obtenerTareas} = useContext(TareaContext);
+    const {proyecto} = useContext(ProyectoContext);
     const [formTarea, setTarea] = useState({
-        id:null,
+        _id:null,
         nombre:'',
-        idProyecto:null,
+        proyecto:null,
         estado:false
     });
-    
-    const {tarea,errorFormulario,agregarTarea,mostrarError,obtenerTareasPorProyecto,modificarTarea} = useContext(TareaContext);
-    const {proyecto} = useContext(ProyectoContext);
 
     useEffect(() => {
         if(tarea){
             setTarea({
-                id:tarea.id,
+                _id:tarea._id,
                 nombre:tarea.nombre,
-                idProyecto:tarea.idProyecto,
+                proyecto:tarea.proyecto,
                 estado:tarea.estado
             })
         }
@@ -29,7 +29,7 @@ const FormTareas = () => {
         setTarea({...formTarea,nombre:event.target.value});
     }
 
-    const handleSubmit = event=>{
+    const handleSubmit = async event=>{
         event.preventDefault();
         if(formTarea.nombre === ''){
             mostrarError('Completa el nombre de la tarea');
@@ -42,18 +42,18 @@ const FormTareas = () => {
 
         if(tarea){
             //modifica tarea
-            modificarTarea(formTarea);
+            await modificarTarea(formTarea);
         }else{
             //agrega tarea
-            agregarTarea(formTarea);
+            await agregarTarea(formTarea);
         }
         setTarea({
-            id:null,
+            _id:null,
             nombre:'',
-            idProyecto:null,
+            proyecto:null,
             estado:false
         });
-        obtenerTareasPorProyecto(proyecto.id);
+        obtenerTareas(proyecto._id);
     }
 
     return ( 

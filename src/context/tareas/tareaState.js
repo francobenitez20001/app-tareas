@@ -1,49 +1,64 @@
 import React, { useContext, useReducer } from 'react';
 import TareaReducer  from "./tareaReducer";
 import { TareaContext } from "./tareaContext";
-import {ProyectoContext} from '../proyectos/proyectoContext';
-import { AGREGAR_TAREA, OBTENER_TAREAS, VALIDAR_FORMULARIO_TAREA, OBENTER_TAREAS_PROYECTO, ELIMINAR_TAREA, MODIFICAR_TAREA, CAMBIAR_ESTADO_TAREA, SELECCIONAR_TAREA } from '../../types';
-import uuid from 'uuid';
+import { ProyectoContext } from "../proyectos/proyectoContext";
+import { AGREGAR_TAREA, OBTENER_TAREAS, VALIDAR_FORMULARIO_TAREA, OBENTER_TAREAS_PROYECTO, ELIMINAR_TAREA, MODIFICAR_TAREA, CAMBIAR_ESTADO_TAREA, SELECCIONAR_TAREA, TAREA_LOADING, TAREA_ERROR } from '../../types';
+import tokenAuth from '../../config/token';
+import clienteAxios from '../../config/axios';
 
 const TareaState = props=>{
-    const tareas = [
-        {id:1,nombre:'Elegir plataforma',estado:false,idProyecto:1},
-        {id:2,nombre:'Elegir colores',estado:true,idProyecto:1},
-        {id:3,nombre:'Elegir plataformas de pago',estado:false,idProyecto:1},
-        {id:4,nombre:'Elegir hosting',estado:true,idProyecto:1}
-    ];
-
     const INITIAL_STATE = {
         tareas:[],
-        tareaPorProyecto:[],
         tarea:null,
-        errorFormulario:false
+        errorFormulario:false,
+        error:null,
+        loading:null
     }
 
     const [state, dispatch] = useReducer(TareaReducer, INITIAL_STATE);
-    const {proyecto} = useContext(ProyectoContext);
+    const {proyecto} = useContext(ProyectoContext)
 
-    const obtenerTareas = ()=>{
+    const obtenerTareas = async(id)=>{
+        const token = localStorage.getItem('token');
+        if(!token) return;
+        tokenAuth(token);
         dispatch({
-            type:OBTENER_TAREAS,
-            payload:tareas
-        })
-    }
-    
-    const obtenerTareasPorProyecto = idProyecto=>{
-        dispatch({
-            type:OBENTER_TAREAS_PROYECTO,
-            payload:idProyecto
-        })
+            type:TAREA_LOADING
+        });
+        try {
+            const reqTareas = await clienteAxios.get(`/api/tareas/${id}`);
+            const {data:{data:tareas}} = reqTareas;
+            dispatch({
+                type:OBTENER_TAREAS,
+                payload:tareas
+            })
+        } catch (error) {
+            console.log('error: ',error);
+            dispatch({
+                type:TAREA_ERROR,
+                payload:error.message
+            })
+        }
     }
 
-    const agregarTarea = tarea=>{
-        tarea.id = uuid.v4();
-        tarea.idProyecto = proyecto.id;
+    const agregarTarea = async tarea=>{
+        const token = localStorage.getItem('token');
+        if(!token) return;
+        tokenAuth(token);
         dispatch({
-            type:AGREGAR_TAREA,
-            payload:tarea
-        })
+            type:TAREA_LOADING
+        });
+        tarea.proyecto = proyecto._id;
+        try {
+            await clienteAxios.post(`/api/tareas`,tarea);
+            return;
+        } catch (error) {
+            console.log('error: ',error);
+            dispatch({
+                type:TAREA_ERROR,
+                payload:error.message
+            })
+        }
     }
 
     const mostrarError = (message)=>{
@@ -86,10 +101,10 @@ const TareaState = props=>{
             value={{
                 tareas:state.tareas,
                 tarea:state.tarea,
-                tareaPorProyecto:state.tareaPorProyecto,
                 errorFormulario:state.errorFormulario,
+                error:state.error,
+                loading:state.loading,
                 obtenerTareas,
-                obtenerTareasPorProyecto,
                 agregarTarea,
                 mostrarError,
                 seleccionarTarea,
